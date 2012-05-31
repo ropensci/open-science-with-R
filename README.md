@@ -1,4 +1,3 @@
-ropensci-book
-=============
+rOpenSci Book
 
-Writing the rOpenSci book on github
+Writing the rOpenSci book on github.
