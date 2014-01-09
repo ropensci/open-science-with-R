@@ -1,0 +1,45 @@
+Outline
+
+* What is an "internet database"?
+* Why use online data.
+* Finding data online.
+* When to move from the browser to R when using online data.
+* Internet databases - a somewhat comprehensive list.
+* Roll your own database.
+
+## What is an "internet database"?
+
+
+
+## Why use online data
+
+
+
+## Finding data online
+
+
+
+## When to move from the browser to R when using online data
+
+The typical scientist is likely to start in the browser to find the data they are after, then continue to download data from the website, then perhaps open in Excel to view, then finally import to R. The data discovery process likely will always start in a browser, but the data collection part becomes much more efficient and easier in R with each additional form field to fill out on a web form. 
+
+Let's consider two scenarios. 
+
+In the first scenario, our scientist Jane Doe wants to understand X question. She needs to get species occurrence data for 3 species. She hears about GBIF through a friend, and decides to check it out. Upon landing on the GBIF website, she figures out what she wants after navigating through a few pages, enters a search term for species A, and downloads the data. She repeats the process for the remaining two species. 
+
+In the second scenario, Jon Doe wants to understand X question, but is interested in modeling data for 500 species. He heard about GBIF through Jane of course, and decided to visit the site to get a sense for what data were available. He decided that data were appropriate, and started to download data for each species. After about 6 species, Jon had a nagging feeling that there must be a better way. After all, why repeat what you can automate. With a progamming language, Jon can repeat the download task for all 500 species with the same set of code, and pass in his species list to the code that gets the data. 
+
+## Scientific internet databases - a brief list
+
+* GBIF
+* Figshare
+* PLOS article search
+* PLOS article-level metrics
+* Biodiversity Heritage Library
+* Almetric
+* Mendeley
+* etc.
+
+## Roll your own database
+
+If you already have a SQL or NoSQL database you don't have to do a lot more work to make it available online. You only need to do two additional things: i) make your database available online, and ii) make a web frontend for people to interact with your database. There are multitude of frameworks out there to easily hook up a server to your database (e.g., Heroku, AWS EC2, Rackspace, etc.). There are many frameworks that are easy to use to slap on a web frontend, e.g,. Bootstrap and Foundation. 
