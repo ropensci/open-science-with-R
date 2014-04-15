@@ -31,7 +31,28 @@ of the *big data* revolution.
 
 Many science questions or at least parts of questions can likely utilize
 data online, whether it be full text of published articles, climate
-data, biological specimen data, or molecular sequence data.
+data, biological specimen data, or molecular sequence data. Some fields,
+like macroecology, almost entirely use data collected by other people to
+ask questions at large spatial scales like *How general is the
+relationship between area sampled and biological diversity (i.e., number
+of species)?*. This question fundamentally requires a lot of data.
+
+As there are some scientists that may use data from the internet
+entirely for their work, some scientists may still benefit from some
+online data use. One example is taxonomic data for biologists. Whether a
+biologist is studying a single species or a community of 1000 species,
+they often do not know the current state of the higher taxonomy, that
+is, the groupings above the species level that organize biological
+diversity. There are a large number of online databases for taxonomic
+information, many of which are avaiallable programatically through the
+`taxize` R package (Python version coming soon). Even if a biologist
+collects all her data in the field or in the lab, she still is likely to
+use the internet at some point in her research process to get
+information on her study species. As the number of species grows larger,
+the repetitiveness of the task becomes more apparent, and the utility of
+a programatic approach becomes more appealing.
+
+<!-- not super satisfying yet, need some better reasoning here -->
 
 Finding data online
 -------------------

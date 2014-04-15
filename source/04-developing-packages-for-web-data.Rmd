@@ -1,0 +1,14 @@
+_Outline_
+
+* 
+* asdf
+* asdf
+* af
+* af
+* af
+* f
+* d
+
+## Further reading
+
+* Hadley Wickham has a great guide for developing R packages to interact with web APIs at [https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd](https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd).
