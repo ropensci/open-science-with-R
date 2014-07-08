@@ -1,138 +1,161 @@
-*Outline*
+_Outline_
 
--   Why an R package?
--   The basics of Developing R packages <!-- summarize hadley's tips -->
--   R package conventions and best practices
--   Package development philosophy <!-- following hadley's -->
--   Writing functions to interact with web data
-    -   APIs
-    -   FTP
-    -   Direct file downloads
-    -   Scraping XML/HTML
-    -   Authentication
-    -   HTTP error codes
-    -   Exposing curl options for advanced users
--   Documenting packages
--   Documenting functions
--   Testing <!-- testthat -->
--   Continuous integration <!-- travis -->
--   Publishing to CRAN <!-- devtools::release -->
--   Quick reference
--   Further reading
+* Why develop an R package?
+* Developing R packages - In general
+* R package conventions and best practices
+* Writing functions to interact with web data
+    * APIs
+    * FTP
+    * Direct file downloads
+    * Scraping XML/HTML
+    * Authentication
+    * HTTP error codes
+    * Exposing curl options for advanced users
+* Developing R packages for web data
+    * Package development workflow
+    * Essential dependencies
+    * Documentation
+    * Testing
+    * Continuous integration
+* CRAN bound
+* Quick reference
+* Further reading
 
-Why an R package?
------------------
+## Why develop an R package?
 
-Going from less to more complicated: a few lines of code to accomplish a
-task, a function to generalize that task, an R package to accomplish a
-similar set of tasks. An R package can be complicated to make, but can
-have great payoffs even if the package is only for your own use. R
-packages have their own namespaces so you can embed function names that
-may clash with others within the package name like
-`packagename::functionname`. In addition, you can easily add
-documentation with parameter explanation and examples for ease of use.
-There is an easy to use framework for incorporating tests as well (see
-*Testing* section below), essential for creating robust software. The
-`devtools` package was created to make the package creating process easy
-- we'll go over `devtools` more below.
+Going from less to more complicated: a few lines of code to accomplish a task, a function to generalize that task, an R package to accomplish a similar set of tasks. An R package can be complicated to make, but can have great payoffs even if the package is only for your own use. R packages have their own namespaces so you can embed function names that may clash with others within the package name like `packagename::functionname`. In addition, you can easily add documentation with parameter explanation and examples for ease of use. There is an easy to use framework for incorporating tests as well (see _Testing_ section below), essential for creating robust software. The `devtools` package was created to make the package creating process easy - we'll go over `devtools` more below.
 
-The basics of developing R packages
------------------------------------
+## Developing R packages
 
-Hadley Wickham has a nice overview of general R package creation in his
-book [**Advanced R programming**](http://adv-r.had.co.nz/). A general
-workflow for creating an R package is as follows (let's say the package
-name is *foobar* for this example):
+Hadley Wickham's [Advanced R][advr] is the best place to find information on developing R packages. We'll skim over the details of basic package development here before diving in to aspets of R package development specific to working with web sources, and cover additional topics like testing and continuous integration.
 
-``` {.coffee}
+__First__, create a package skeleton.
+
+```r
 library('devtools')
 create('foobar')
 ```
 
-Optionally, you can set the path to the package in the call to
-`create()`, which creates a package skeleton with the basic files you
-need to make a package:
+```r
+create('foobar')
+```
 
-    /foobar
-      /DESCRIPTION
-      /man
-      /R/foobar-package.r
+```r
+Creating package foobar in .
+No DESCRIPTION found. Creating with values:
 
-For each function or set of similar functions create a file in the `R/`
-directory.
+Package: foobar
+Title: What the package does (short line)
+Version: 0.1
+Authors@R: "First Last <first.last@example.com> [aut, cre]"
+Description: What the package does (paragraph)
+Depends: R (>= 3.1.0)
+License: What license is it under?
+LazyData: true
+Adding Rstudio project file to foobar
+```
 
-R package conventions and best practices
-----------------------------------------
+This creates a new folder with the following structure:
 
-Package development philosophy
-------------------------------
+```
+foobar/
+  R/foobar-package.R
+  man/foobar-package.Rd
+  DESCRIPTION
+  .Rbuildignore
+```
 
-Writing functions to interact with web data
--------------------------------------------
+Where the `R` folder holds any R code, the `man` folder holds documentation files, the DESCRIPTION file holds the metadata describing the package, and `.Rbuildignore` holds things to ignore when building the R package to install later.
 
-Documenting packages
---------------------
+__Second__, write some code! Let's write a function that prints something when the function is invoked, and add some `roxygen` documentation.
 
-Documenting functions
----------------------
+```r
+#' Print message given
+#' @export
+#' @param x Message to print
+foo <- function(x){
+	print(x)
+}
+```
 
-Testing
--------
+Then we can use it:
 
-Testing has become quite easy in R packages with the recent arrival of
-the [`testthat`
-package](http://cran.r-project.org/web/packages/testthat/index.html).
+```r
+foo("bar")
+```
 
-Continuous integration
-----------------------
+```r
+[1] "bar"
+```
 
-Continuous integration is a way to integrate your R package with a
-framework for building, testing, and running any examples from your
-package. The easiest way to do this is using
-[Travis-CI](https://travis-ci.org/). Travis-CI builds your package, and
-runs any tests. etc. that you describe in a `.travis.yml` file. There is
-an ongoing project lead by Google's [Craig
-Citro](https://github.com/craigcitro/) to better support R within
-Travis-CI. The following is an example `.travis.yml` file:
+Now we save the `foo()` function into a file named `foo.R` in the `R` folder. After that, we can use a function from the `devtools` package called `document()`, which generates a documentation file in the `man` folder automatically.
 
-    language: c
-    script: ./travis-tool.sh run_tests
-    before_script:
-    - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-    - chmod 755 ./travis-tool.sh
-    - sudo apt-get update
-    - sudo apt-get install gdal-bin libgdal1 libgdal1-dev netcdf-bin libproj-dev
-    - ./travis-tool.sh bootstrap
-    - ./travis-tool.sh install_deps
-    - ./travis-tool.sh github_package assertthat
+```r
+document("~/foobar")
+```
 
-Putting this `.travis.yml` file in the root of your R package will run a
-build on Travis-CI on each of your commits to your Github repository.
-Remember to add `.travis.yml` to your `.Rbuildignore` file in your R
-package so that the file is ignored on R builds.
 
-Publishing to CRAN
-------------------
 
-Quick reference
----------------
+## Developing R packages for web data
 
--   Create package (from `devtools` package): `create("pkg_name")`
--   Run tests in package (from `testthat` package):
-    `test_package("pkg_name")` or `check("pkg_name")` will run tests as
-    part of `R CMD CHECK` process
--   Publish package to CRAN (from `devtools` package):
-    `release("pkg_name")`
--   
+XXX
 
-Further reading
----------------
+### Package development workflow
 
--   Hadley Wickham has a book in progress called Advanced R programming,
-    which has a number of sections on developing R packages. Find it at
-    <http://adv-r.had.co.nz/>.
--   Hadley Wickham has a set of best practices for developing R packages
-    to interact with web APIs within the `httr` package at
-    <https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd>.
--   etc...
+XXX
 
+### Essential dependencies
+
+XXX
+
+### Documentation
+
+XXX
+
+### Testing
+
+Testing has become quite easy in R packages with the recent arrival of the [`testthat` package](http://cran.r-project.org/web/packages/testthat/index.html).
+
+### Continuous integration
+
+Continuous integration is a way to integrate your R package with a framework for building, testing, and running any examples from your package. The easiest way to do this is using [Travis-CI][travis]. Travis-CI builds your package, and runs any tests. etc. that you describe in a `.travis.yml` file. There is an ongoing project lead by Google's [Craig Citro](https://github.com/craigcitro/) to better support R within Travis-CI. The following is an example `.travis.yml` file:
+
+```
+language: c
+script: ./travis-tool.sh run_tests
+before_script:
+- curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
+- chmod 755 ./travis-tool.sh
+- sudo apt-get update
+- sudo apt-get install gdal-bin libgdal1 libgdal1-dev netcdf-bin libproj-dev
+- ./travis-tool.sh bootstrap
+- ./travis-tool.sh install_deps
+- ./travis-tool.sh github_package assertthat
+```
+
+Putting this `.travis.yml` file in the root of your R package will run a build on Travis-CI on each of your commits to your Github repository. Remember to add `.travis.yml` to your `.Rbuildignore` file in your R package so that the file is ignored on R builds
+
+## CRAN bound
+
+The best place to put a useable R package, where it will get the most eyeballs on it, is CRAN - the Comprehensive R Archive Network. The `devtools` package is essential to help you submit your package to CRAN - see the `release` function. Release takes the path to your package folder as the first argument, and helps you through the process, asking questions along the way, and at the end uploads the package to CRAN for you, and opens a draft email in your default browser.
+
+```r
+release('~/foobar')
+```
+
+XXX
+
+## Quick reference
+
+* Create package (from `devtools` package): `create("pkg_name")`
+* Run tests in package (from `testthat` package): `test_package("pkg_name")` or `check("pkg_name")` will run tests as part of `R CMD CHECK` process
+* Publish package to CRAN (from `devtools` package): `release("pkg_name")`
+
+## Further reading
+
+* Hadley Wickham has a book in progress called Advanced R programming, which has a number of sections on developing R packages. Find it at [http://adv-r.had.co.nz/][advr].
+* Hadley Wickham has a set of best practices for developing R packages to interact with web APIs within the `httr` package at [https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd](https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd).
+* etc...
+
+[advr]: http://adv-r.had.co.nz/
+[travis]: https://travis-ci.org/
