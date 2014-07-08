@@ -13,7 +13,73 @@ _Outline_
 
 ## Why develop an R package?
 
-## Developing R packages - In general
+Making a package is the easiest way to share R code. If you are working with an online data source in R, and there isn't already an R package to work with that data source, the whole community could benefit from your work if you bundle your code and functions up into an R package.
+
+## Developing R packages
+
+Hadley Wickham's [Advanced R][advrbook] is the best place to find information on developing R packages. We'll skim over the details of basic package development here before diving in to aspets of R package development specific to working with web sources, and cover additional topics like testing and continuous integration.
+
+__First__, create a package skeleton.
+
+```r
+create('foobar')
+```
+
+```r
+Creating package foobar in .
+No DESCRIPTION found. Creating with values:
+
+Package: foobar
+Title: What the package does (short line)
+Version: 0.1
+Authors@R: "First Last <first.last@example.com> [aut, cre]"
+Description: What the package does (paragraph)
+Depends: R (>= 3.1.0)
+License: What license is it under?
+LazyData: true
+Adding Rstudio project file to foobar
+```
+
+This creates a new folder with the following structure:
+
+```
+foobar/
+  R/
+  man/
+  DESCRIPTION
+  .Rbuildignore
+```
+
+Where the `R` folder holds any R code, the `man` folder holds documentation files, the DESCRIPTION file holds the metadata describing the package, and `.Rbuildignore` holds things to ignore when building the R package to install later.
+
+__Second__, write some code! Let's write a function that prints something when the function is invoked, and add some `roxygen` documentation.
+
+```r
+#' Print message given
+#' @export
+#' @param x Message to print
+foo <- function(x){
+	print(x)
+}
+```
+
+Then we can use it:
+
+```r
+foo("bar")
+```
+
+```r
+[1] "bar"
+```
+
+Now we save the `foo()` function into a file named `foo.R` in the `R` folder. After that, we can use a function from the `devtools` package called `document()`, which generates a documentation file in the `man` folder automatically.
+
+```r
+document("~/foobar")
+```
+
+
 
 ## Developing R packages for web data
 
@@ -25,6 +91,17 @@ _Outline_
 
 ## CRAN bound
 
+The best place to put a useable R package, where it will get the most eyeballs on it, is CRAN - the Comprehensive R Archive Network. The `devtools` package is essential to help you submit your package to CRAN - see the `release` function. Release takes the path to your package folder as the first argument, and helps you through the process, asking questions along the way, and at the end uploads the package to CRAN for you, and opens a draft email in your default browser.
+
+```r
+release('~/foobar')
+```
+
+XXX
+
 ## Further reading
 
 * Hadley Wickham has a great guide for developing R packages to interact with web APIs at [https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd](https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd).
+
+
+[advrbook]: #
