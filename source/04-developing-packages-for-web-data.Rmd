@@ -1,13 +1,29 @@
 _Outline_
 
-* 
-* asdf
-* asdf
-* af
-* af
-* af
-* f
-* d
+* Why develop an R package?
+* Developing R packages - In general
+* Developing R packages for web data
+  * Package development workflow
+  * Essential dependencies
+  * Documentation
+  * Testing
+  * Continuous integration
+* CRAN bound
+* Further reading
+
+## Why develop an R package?
+
+## Developing R packages - In general
+
+## Developing R packages for web data
+
+### Package development workflow
+### Essential dependencies
+### Documentation
+### Testing
+### Continuous integration
+
+## CRAN bound
 
 ## Further reading
 
