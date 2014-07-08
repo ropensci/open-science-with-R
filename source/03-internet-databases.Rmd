@@ -5,7 +5,6 @@ Outline
 * Finding data online.
 * When to move from the browser to R when using online data.
 * Dissappearing data.
-*
 * Database content and interfaces can change.
 * Internet databases - a non-exhuastive list.
 * Roll your own database.
@@ -83,3 +82,5 @@ What follows is a short list of online databases of at least some scientific use
 ## TL;DR: Roll your own database
 
 If you already have a database you don't have to do a lot more work to make it available online. You only need to do two additional things: i) make your database available online, and ii) make a web frontend for people to interact with your database. There are multitude of frameworks out there to easily hook up a server to your database (e.g., Heroku, AWS EC2, Rackspace, etc.). There are many frameworks that are easy to use to slap on a web frontend, e.g,. Bootstrap and Foundation. See the _Sharing Data_ chapter for more information on sharing data.
+
+If you have some data, but you don't already have them in a database, you may want to start by learning databases with [SQLite](#), which is a super light weight SQL database. When it comes time to have your database serve data to the public on the web, you likely will want to change to something like PostgreSQL or MySQL.
