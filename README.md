@@ -1,7 +1,7 @@
 
 # Open Science with R
 
-Public repo for a upcoming book to be published by Taylor and Francis/CRC Press in July 2014.  Tentative chapter list:
+Public repo for a upcoming book to be published by Taylor and Francis/CRC Press.  Tentative chapter list:
 
 | CONTENTS  |
 | --------  |
