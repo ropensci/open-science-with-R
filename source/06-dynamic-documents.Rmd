@@ -1,10 +1,16 @@
 ## Outline
 
-* Why reproducible documents?
+* What/Why reproducible documents?
   - reproducibility
 * Overview of Rmarkdown
   - syntax
+* Overiew of knitr package (open ended question of how much detail to do here)
+  - basics of knitr
+  - hooks
+  - purl
+  
 * Combining Rmarkdown with LaTeX
+
 * Adding citations
   -Knitcitations
 * Pandoc overview
