@@ -1,1 +1,18 @@
-we may want to keep this chapter limited to a single person, lab sharing data, not a provider sharing data (as in providing data, covered in chapter 3) 
+## Outline
+
+* Why share data? 
+  - The virtues of sharing data
+  - increased citation
+* Best practices for sharing data
+  - How to format your data for sharing
+* Metadata 
+  - It's your friend, why you should care
+  - Enhanced discoverability
+  - What format do you choose?
+  - Using EML package (NeXML too?)
+* Repositories
+  - Where can you share your data?
+    * KNB, Figshare, Dryad, DataONE?
+* Use case
+  - Sharing data with rfigshare
+  - Creating EML and pushing to KNB?

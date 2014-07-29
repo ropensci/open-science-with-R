@@ -1,0 +1,11 @@
+## Outline
+
+* Why reproducible documents?
+  - reproducibility
+* Overview of Rmarkdown
+  - syntax
+* Combining Rmarkdown with LaTeX
+* Adding citations
+  -Knitcitations
+* Pandoc overview
+* Make?
