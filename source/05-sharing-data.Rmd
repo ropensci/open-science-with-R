@@ -16,3 +16,52 @@
 * Use case
   - Sharing data with rfigshare
   - Creating EML and pushing to KNB?
+
+
+## Best practices
+
+Follow guides provided by repositories and literature of your field.  For instance, recent papers 
+
+<!--Don't need to list all these, but good to highlight how our tools make all these things easy -->
+
+[White et al. 2013](http://dx.doi.org/10.4033%2Fiee.v6i2.4608) Nine simple ways: 
+
+1. Share your data.
+2. Provide metadata.
+3. Provide an unprocessed form of the data.
+4. Use standard data formats.
+5. Use good null values.
+6. Make it easy to combine your data with other datasets
+7. Perform basic quality control.
+8. Use an established repository.
+9. Use an established and liberal license.
+
+[Cranston et al 2014](http://doi.org/http://dx.doi.org/10.1371%2Fcurrents.tol.bf01eff4a6b60ca4825c69293dc59645) "Best practices for data sharing in phylogenetics research.
+
+1. Manage your data for sharing from the start
+2. Publish your data (not just figures of your data)
+3. CC0 license maximizes reuse
+4. Include a README 
+5. Provide meaningful labels (for taxa)
+6. Use consistent labels (for taxa)
+7. Provide all the data, all the code
+8. Defines the MIAPA checklist: https://github.com/miapa/miapa/blob/master/checklist/MIAPA-checklist.md
+9. "Provide complete and easily reusable information about characters, character states, and the specimens from which they are derived"
+10. Educate yourself on data management practices in your field
+
+
+
+
+
+
+Heirarchical checklist for data sharing: (de Waard http://www.slideshare.net/anitawaard/slides-for-workshop-on-discovery-informatics)
+
+- [ ] Preserved (in any format)
+- [ ] Archived (long-term, software-agnostic format)
+- [ ] Accessible
+- [ ] Comprehensible
+- [ ] Discoverable (e.g. indexed by metadata, search system)
+- [ ] Reproducible (comprehensive enough metadata that others can reproduce it)
+- [ ] Trusted (e.g. validated or checked by peer review)
+- [ ] Citable (e.g. unique identifier, can count citations)
+- [ ] Usable (executable code, machine readable metadata)
