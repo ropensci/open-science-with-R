@@ -1,35 +1,36 @@
 _Outline_
 
 * Why develop an R package?
-* Developing R packages - In general
+* Developing R packages
 * R package conventions and best practices
+    * Short discussion of best practices for R pkgs in general
 * Writing functions to interact with web data
-  * APIs
-  * FTP
-  * Direct file downloads
-  * Scraping XML/HTML
-  * Authentication
-  * HTTP error codes
-  * Exposing curl options for advanced users
+    * APIs
+    * FTP
+    * Direct file downloads
+    * Scraping XML/HTML
+    * Authentication
+    * HTTP codes
+    * Exposing curl options for advanced users
 * Developing R packages for web data
-  * Package development workflow
-  * Essential dependencies
-  * Documentation
-  * Testing
-  * Continuous integration
+    * Package development workflow
+    * Essential dependencies
+    * Documentation
+    * Testing
+    * Continuous integration
 * CRAN bound
 * Quick reference
 * Further reading
 
 ## Why develop an R package?
 
-Going from less to more complicated: a few lines of code to accomplish a task, a function to generalize that task, an R package to accomplish a similar set of tasks. An R package can be complicated to make, but can have great payoffs even if the package is only for your own use. R packages have their own namespaces so you can embed function names that may clash with others within the package name like `packagename::functionname`. In addition, you can easily add documentation with parameter explanation and examples for ease of use. There is an easy to use framework for incorporating tests as well (see _Testing_ section below), essential for creating robust software. The `devtools` package was created to make the package creating process easy - we'll go over `devtools` more below.
+Going from less to more complicated: a few lines of code to accomplish a task, a function to generalize that task, an R package to accomplish a similar set of tasks. An R package can be complicated to make, but can have great payoffs even if the package is only for your own use. R packages have their own namespaces so you can embed function names that may clash with others within the package name like `packagename::functionname`. In addition, you can easily add documentation with parameter explanation and examples for ease of use. There is an easy to use framework for incorporating tests as well (see _Testing_ section below), essential for creating robust software. The `devtools` package was created to make the package creation process painless - we'll go over `devtools` more below.
 
 ## Developing R packages
 
-Hadley Wickham's [Advanced R][advr] is the best place to find information on developing R packages. We'll skim over the details of basic package development here before diving in to aspets of R package development specific to working with web sources, and cover additional topics like testing and continuous integration.
+Hadley Wickham's [R packages][hadrpkgs] is the best place to find information on developing R packages. We'll skim over the details of basic package development here before diving in to aspects of R package development specific to working with web resources, and cover additional topics like testing and continuous integration.
 
-__First__, create a package skeleton.
+First, create a package skeleton.
 
 ```r
 library('devtools')
@@ -65,9 +66,9 @@ foobar/
   .Rbuildignore
 ```
 
-Where the `R` folder holds any R code, the `man` folder holds documentation files, the DESCRIPTION file holds the metadata describing the package, and `.Rbuildignore` holds things to ignore when building the R package to install later.
+Where the `R` folder holds any R code of `*.R` file extension, the `man` folder holds documentation files of `*.Rd` file extension, the DESCRIPTION file holds the metadata describing the package, and `.Rbuildignore` holds things to ignore when building the R package to install later.
 
-__Second__, write some code! Let's write a function that prints something when the function is invoked, and add some `roxygen` documentation.
+Second, write some code! Let's write a function that prints something when the function is invoked, and add some `roxygen` documentation.
 
 ```r
 #' Print message given
@@ -78,7 +79,7 @@ foo <- function(x){
 }
 ```
 
-Then we can use it:
+If we execute this function, we can then use it:
 
 ```r
 foo("bar")
@@ -94,11 +95,52 @@ Now we save the `foo()` function into a file named `foo.R` in the `R` folder. Af
 document("~/foobar")
 ```
 
+There are various ways to go about the workflow of code writing, documentation generation, etc., but the essential bits we just covered. See [Hadley Wickham's book][hadrpkgs] for in depth details.
+
+## R package conventions and best practices
+
+Below we'll talk about many issues that could be in this section - here we'll just cover a few conventions and best practices that won't be discussed at length.
+
+* __Package naming:__ This is more of a style point, but the best package names are all lowercase, are meaningful, and don't conflict with other R packages.
+* __Development location:__ A great thing about open source software is that _it should be_ easy to contribute to a piece of software, report bugs, and request features. However, when software is not developed in a location that is meant for software development, this becomes difficult. Use a modern software development application, like Bitbucket, Google Code, Gitlab, GitHub, etc.
+* __Package versioning:__ Version your software appropriately! Ideally use semantic versioning, in which XXXX. See [this blog post by Yihui Xie][xiepost] as a good introduction.
+* __OO system:__ Which object system to use in R is a matter of preference. S3 is the most liberal and least structured, whereas S4 is more strict and more structured, reference classes are similar, and the new R6 class is more or less the same as reference classes but less strict and faster. We often use S3 because development with S3 classes is extremely easy, and they allow flexible manipulation by users. When a package is extremely complicated, we often use S4 classes.
+
+## Writing functions to interact with web data
+
+### APIs
+### FTP
+### Direct file downloads
+### Scraping XML/HTML
+
+
+### Authentication
+
+* __None.__ This is actually quite common, which makes development easier.
+* __Basic authentication:__ Usually a username and password combination, used in a URL like `http://jane_doe:coolpassword/things.com`. Remind user to get their username and password from their account for the service.
+* __API key:__ This often requires a user to go into the user account for the web resource and get an API key. This key is often a longish alphanumeric string.
+* __OAuth 1:__ This is one type of OAuth...
+* __OAuth 2:__ This is another type of OAuth...
+
+
+### HTTP codes
+
+Not everything has a nice set of standardized codes - http codes are one of these that has standardized codes that can be referenced. We won't go over all of these here, so find out more about them at the [XXX site][httpcodes].
+
+### Exposing curl options for advanced users
+
 
 
 ## Developing R packages for web data
 
-XXX
+Developing R packages that interact with web data in at least some capacity is not terribly different from that described above. However, there are some major differences to consider.
+
+1. Examples in help files for functions, in demos, and in vignettes may occassionally fail due to the web resource being unavailable. Since whether the web resource is available is very likely not in your control, you have to build in safeguards so that package checks won't constantly fail.
+2. The time a function takes to run, and subsequently, the time it takes a package vignette to compile, and tests to run, depends not only on the package code but the web resource. Keep this in mind when creating your package. Make examples very brief, and make tests short.
+3. Keep up to date with changes in the web resource. The code in your package can change, but the web resource can change at any time, causing existing code to break. Strategies for staying on top of these changes include making code as robust as possible to anticipated minor changes, and watching for changes in a list serve, website, or Twitter account for the web resource.
+4. Web resources often require authentication. Making authentication as painless as possible is important for increasing user uptake.
+
+What follows is discussion of some of the most important aspects of package development.
 
 ### Package development workflow
 
@@ -110,15 +152,17 @@ XXX
 
 ### Documentation
 
-XXX
+Documentation is essential for any software.
 
 ### Testing
 
-Testing has become quite easy in R packages with the recent arrival of the [`testthat` package](http://cran.r-project.org/web/packages/testthat/index.html).
+Testing has become quite easy in R packages with the recent arrival of the [testthat package](http://cran.r-project.org/web/packages/testthat/index.html). The reason for testing is to increase quality of your software. Tests should help uncover bugs in software, and ideally point out on exactly which line of your test the failure occurred so you can more easily fix the bug.
+
+_When do I write tests?_ Ideally, at the very beginning of package development. The more you put off writing tests, the harder it will be to get them done later.
 
 ### Continuous integration
 
-Continuous integration is a way to integrate your R package with a framework for building, testing, and running any examples from your package. The easiest way to do this is using [Travis-CI][travis]. Travis-CI builds your package, and runs any tests. etc. that you describe in a `.travis.yml` file. There is an ongoing project lead by Google's [Craig Citro](https://github.com/craigcitro/) to better support R within Travis-CI. The following is an example `.travis.yml` file:
+Continuous integration is a way to integrate your R package with a framework for building, testing, and running any examples from your package. The easiest ways to do this is using [Travis-CI][travis] and [Appveyor][appveyor]. Both Travis-CI and Appveyor build your package, and runs any tests. etc. that you describe in a `.travis.yml` or `appveyor.yml` file. There is an ongoing project lead by Google's [Craig Citro](https://github.com/craigcitro/) to better support R within Travis-CI, and there is a project to support R for Appveyor at [rappveyor][rappveyor]. The following is an example `.travis.yml` file:
 
 ```
 language: c
@@ -137,13 +181,34 @@ Putting this `.travis.yml` file in the root of your R package will run a build o
 
 ## CRAN bound
 
-The best place to put a useable R package, where it will get the most eyeballs on it, is CRAN - the Comprehensive R Archive Network. The `devtools` package is essential to help you submit your package to CRAN - see the `release` function. Release takes the path to your package folder as the first argument, and helps you through the process, asking questions along the way, and at the end uploads the package to CRAN for you, and opens a draft email in your default browser.
+The best place to put a useable R package, where it will get the most eyeballs on it, is CRAN - the Comprehensive R Archive Network. The `devtools` package is essential to help you submit your package to CRAN - see the `release` function. Release takes the path to your package folder as the first argument, and helps you through the process, asking questions along the way, and at the end uploads the package to CRAN for you.
 
 ```r
 release('~/foobar')
 ```
 
-XXX
+There are a few files you'll need to add to your package before you use `release()`. The `NEWS` file has a simple text file log of changes in each version of your software, e.g.
+
+```
+taxize 0.1.0
+===============
+
+BUG FIXES
+
+* changed paste0 to paste to avoid problems on certain platforms.
+* removed all tests until the next version so that tests will not fail on any platforms.
+* plyr was missing as import for iucn_summary fxn.
+```
+
+Another is the `cran-comments.md` file. This is a simple text file with any notes about the submission and any notes for the CRAN maintainers. E.g.
+
+```
+R CMD CHECK passed on my local OS X install on R 3.1 and R 3.2, ubuntu running on travis-ci, and win builder.
+
+This is a re-submission of v0.7.0 with non-ASCII characters removed from the vignette so CHECK passes cleanly.
+```
+
+If you don't have the `NEWS` and `cran-comments.md` files, the `release()` function will ask you to include them.
 
 ## Quick reference
 
@@ -153,9 +218,13 @@ XXX
 
 ## Further reading
 
-* Hadley Wickham has a book in progress called Advanced R programming, which has a number of sections on developing R packages. Find it at [http://adv-r.had.co.nz/][advr].
+* Hadley Wickham has a book in progress called R package development, which has a number of sections on developing R packages. Find it at [http://r-pkgs.had.co.nz/](http://r-pkgs.had.co.nz/).
 * Hadley Wickham has a set of best practices for developing R packages to interact with web APIs within the `httr` package at [https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd](https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd).
 * etc...
 
-[advr]: http://adv-r.had.co.nz/
+[hadrpkgs]: http://r-pkgs.had.co.nz/
 [travis]: https://travis-ci.org/
+[xiepost]: #
+[appveyor]: #
+[rappveyor]: #
+[httpcodes]: #
