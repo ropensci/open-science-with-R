@@ -10,7 +10,7 @@ _Outline_
     * Direct file downloads
     * Scraping XML/HTML
     * Authentication
-    * HTTP error codes
+    * HTTP codes
     * Exposing curl options for advanced users
 * Developing R packages for web data
     * Package development workflow
@@ -112,14 +112,74 @@ Below we'll talk about many issues that could be in this section - here we'll ju
 ### FTP
 ### Direct file downloads
 ### Scraping XML/HTML
+
+
 ### Authentication
-### HTTP error codes
+
+* __None.__ This is actually quite common, which makes development easier.
+* __Basic authentication:__ Usually a username and password combination, used in a URL like `http://jane_doe:coolpassword/things.com`. Remind user to get their username and password from their account for the service.
+* __API key:__ This often requires a user to go into the user account for the web resource and get an API key. This key is often a longish alphanumeric string.
+* __OAuth 1:__ This is one type of OAuth...
+* __OAuth 2:__ This is another type of OAuth...
+
+
+### HTTP codes
 
 Not everything has a nice set of standardized codes - http codes are one of these that has standardized codes that can be referenced. We won't go over all of these here, so find out more about them at the [XXX site][httpcodes].
 
 ### Exposing curl options for advanced users
 
+It is a good idea to provide to users the ability to use curl options. For curl options, see `httr::httr_options()`, or `RCurl::listCurlOptions()`. Some examples will demonstrate their utility, in this case using `httr`.
 
+**verbose**
+
+```r
+res <- GET('http://localhost:4000', config = verbose())
+```
+
+Which prints out the following message about what curl is doing.
+
+```r
+-> GET / HTTP/1.1
+-> User-Agent: curl/7.30.0 Rcurl/1.95.4.1 httr/0.5
+-> Host: localhost:4000
+-> Accept-Encoding: gzip
+-> accept: application/json, text/xml, */*
+->
+<- HTTP/1.1 200 OK
+<- Etag: 1c4e2e7-14fe-54108d96
+<- Content-Type: text/html
+<- Content-Length: 5374
+<- Last-Modified: Wed, 10 Sep 2014 17:42:46 GMT
+<- Server: WEBrick/1.3.1 (Ruby/2.1.0/2013-12-25)
+<- Date: Wed, 10 Sep 2014 17:42:55 GMT
+<- Connection: Keep-Alive
+<-
+```
+
+**timeout**
+
+```r
+res <- GET('http://localhost:4000', config = timeout())
+```
+
+xxx
+
+```r
+asdf
+```
+
+**progress**
+
+```r
+res <- GET('http://localhost:4000', config = progress())
+```
+
+xxx
+
+```r
+asdf
+```
 
 ## Developing R packages for web data
 

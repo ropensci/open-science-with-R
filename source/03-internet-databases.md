@@ -35,23 +35,96 @@ XXXX more...
 
 ## <a href="#find" name="find">#</a> Finding data online
 
-Where to find data online will be highly dependent on your field. Regardless of field, perhaps all naive data searches begin by "Googling" keywords for the data of interest.
+Where to find data online will be highly dependent on your field. Regardless of field, perhaps all naïve data searches begin by "Googling" keywords for the data of interest. This is a great way to start, but eventually you may need a more specific search tool. For example, if you are interested in scholarly texts, Google Scholar, Web of Science, and similar tools will allow better filtering to get the items desired.
 
-## <a href="#move" name="move">#</a> When to move from the browser to R when using online data
+This first step of web browsing is an important part of the data acquisition process. Although much scholarly content is behind paywalls, the metadata is almost always freely shared. This makes finding content online much easier. However, once found, content behind paywalls can lead to extreme frustration.
+
+Special note should be taken of search engines that allow programmatic access to their data. Google, for example, has a great web interface for searching for pretty much anything. Although they do provide programmatic access to some of their data, they don't for the major search engine (google.com), or the scholarly search engine (google.com/scholar). On the other hand, GBIF is a clearinghouse for biodiversity records from all over the globe - like Google, they have a great web interface, but unlike Google, they all programmatic access to data. It is this ability to have a nice web interface combined with programmatic access that makes a search engine so effective.
+
+Below is a non-exhaustive list of mostly open search engines.
+
+Table X. Search engines. Those with programmatic access are italicized.
+
+| Search engine   | Category  | Link     |
+| :------------- | :------------- | :------------- |
+| Google Scholar | Text | [http://google.com/scholar]()       |
+| Web of Science[^1] | Text | [http://stuff.com]()       |
+| _Microsoft Academic Research_ | Text | [http://stuff.com]()       |
+| _Global Biodiversity Information Facility_ | Data | [http://gbif.org]() |
+| _Crossref_ | Text | [http://crossref.org]()       |
+| _NCBI_ | Data/Text | [http://ncbi.org]()       |
+| _Data.gov_ | Data | [http://data.gov]()       |
+
+[^1]: Web of Science is widely used, but only accessible to libraries that subscribe.
+
+## <a href="#move" name="move">#</a> When to move from the browser to R
 
 The typical scientist is likely to start in the browser to find the data they are after, then continue to download data from the website, then perhaps open in Excel to view, then finally import to R. The data discovery process likely will always start in a browser, but the data collection part becomes much more efficient and easier in R with each additional form field to fill out on a web form.
 
 Let's consider two scenarios.
 
-In the first scenario, our scientist Jane Doe wants to understand X question. She needs to get species occurrence data for 3 species. She hears about GBIF through a friend, and decides to check it out. Upon landing on the GBIF website, she figures out what she wants after navigating through a few pages, enters a search term for species A, and downloads the data. She repeats the process for the remaining two species.
+In the first scenario, our scientist Jane wants to ask if there are more occurrences of a single bird species in North America or South America. She needs to get species occurrence data for one species, and for two continents. She hears about [GBIF][gbif] through a friend, and decides to check it out. Upon landing on the GBIF website, she figures out what she wants after navigating through a few pages, enters a search term for her species limiting to occurrences in North America, and downloads the data as a `.csv` file. She repeats the process for South America.
 
-In the second scenario, Jon Doe wants to understand X question, but is interested in modeling data for 500 species. He heard about GBIF through Jane of course, and decided to visit the site to get a sense for what data were available. He decided that data were appropriate, and started to download data for each species. After about 6 species, Jon had a nagging feeling that there must be a better way. After all, why repeat what you can automate. With a progamming language, Jon can repeat the download task for all 500 species with the same set of code, and pass in his species list to the code that gets the data.
+In the second scenario, Jill wants to ask if abundance distributions by latitude differ among species. Jill is interested in a larger sample size than Jane, about 500 species. She heard about GBIF through Jane, and decided to visit the site to get a sense for what data were available. She decided that data were appropriate, and started to download data for each species. After about 6 species, Jill had a nagging feeling that there must be a better way. After all, why repeat what you can automate. With a progamming language, Jill can repeat the download task for all 500 species with the same set of code, and pass in her species list to the code that gets the data. In fact, the code is pretty simple:
+
+
+```r
+library('rgbif')
+```
+
+```
+## 
+## New to rgbif? Tutorial at http://ropensci.org/tutorials/rgbif_tutorial_newapi.html 
+## See http://ropensci.org/tutorials/rgbif_tutorial.html for the old GBIF API 
+## citation(package='rgbif') for the citation for this package 
+## Use suppressPackageStartupMessages() to suppress these startup messages in the future
+```
+
+```r
+splist <- c('Aphelandra acanthus','Gongora dressleri','Phleum alpinum','Indigofera floribunda','Himantoglossum calcaratum','Hypochaeris variegata','Calyptranthes rostellata','Lupinus altimontanus','Solanum candidum','Begonia hispidissima')
+keys <- name_backbone(splist)
+occ_search(keys)
+```
+
+```
+## Error: Invalid integer range: FALSE
+```
+
+```r
+## Occ. found [2482598 (255927), 2492010 (1436233), 2498387 (416768)]
+## Occ. returned [2482598 (5), 2492010 (5), 2498387 (5)]
+## No. unique hierarchies [2482598 (1), 2492010 (1), 2498387 (1)]
+## No. media records [2482598 (5), 2492010 (5), 2498387 (5)]
+## Args [taxonKey=2482598,2492010,2498387, limit=5, fields=minimal]
+## First 10 rows of data from 2482598
+##
+##                  name       key decimalLatitude decimalLongitude
+## 1 Cyanocitta stelleri 891781350           37.74           -122.5
+## 2 Cyanocitta stelleri 891051562           38.94           -120.0
+## 3 Cyanocitta stelleri 891042142           37.24           -122.0
+## 4 Cyanocitta stelleri 891047537           37.87           -122.2
+## 5 Cyanocitta stelleri 891051134           35.19           -111.6
+```
+
+In the first scenario, Jane doesn't gain much by getting her data programmatically in R. She can quickly do it in the web browser. Especially if Jane is not very comfortable with programming, the web browser workflow works perfect. In the second scenario, Jill realized how long it would take in the browser, and even if she had some code to learn, getting the data programatically was worth it.
+
+This is not to say once you move away from the browser to the command line, you should stay on the command line. The most effective data discovery is a combination of web browsing for initial discovery, and programmatic access for the repetitive tasks.
 
 ## <a href="#diss" name="diss">#</a> Disappearing data
 
-Despite the benefits of online data, there are potential costs. There are a variety of things to consider with online data: whether the data exists any longer, the speed at which the server/database online provide the data, and your internet connection speed. Any of these things can influence the speed at which you get data back.
+Despite the benefits of online data, there are potential costs. There are a variety of things to consider with online data: whether the data exists any longer, the speed at which the server/database online provide the data, and your internet connection speed. Any of these things can influence the speed at which you get data back to your machine.
 
-See below for more discussion of caching.
+### Link rot
+
+Although link rot isn't overtly obvious in day-to-day web browsing, although you probably do see nasty error messages from time to time that say _the page you are looking for is gone_. Link rot should be taken into consideration in science. Many have thought hard about this problem, and have introduced the idea of the _persistent identifier_ (reference). This can be any alphanumeric string, but often takes the form of a [URI (Universal Resource Identifier)](uri). One type of persistent identifier is the [DOI (Digital Object identifier)](doi), which is probably the most widely known type of persistent identifier. To quickly get a sense for the power of a persistent identifier, go to [http://dx.doi.org/10.1371/journal.pone.0086169](). Although the publisher of this paper (Public Library of Science) can change their URL for the article, the DOI for the article (10.1371/journal.pone.0086169) should always be resolvable to the current location for the article on the web.
+
+Mostly, individual scientists don't deal with providing and worrying about identifiers and link rot. However, more and more you can share your various scientific outputs, and in locations that will provide a persistent identifier.
+
+In the age of open science we need to be cognizant of the problem of dissapearing data, because data/text/methods that can not be found 5 years after the study can not be checked, replicated, or otherwise used.
+
+### Servers
+
+One thing out of the scientists control is what goes on the server side. Think of your data acquisition process like ordering a coffee: the barista is the server, and you are the client. There are certain things out of your control that the barista does that affect the coffee you get. Likewise, servers are doing all sorts of data manipulation/processing/caching/etc. that can change the data you get back. You will likely interact with a server via a client for a particularly programming language. Ideally, the maintainer of that client will keep the client up to date with changes.
 
 ## <a href="#change" name="change">#</a> Database content and interfaces can change
 
@@ -65,10 +138,12 @@ Every online database needs to provide some way for the user to inspect the data
 
 Most online databases do not stagnate, but grow as more data is added to them. Just like Wikipedia grows though time as new pages are added and new editors edit a page, online databases incorporate new data as they become available. Addtional data is additional knowledge. However, as content changes, even a single additional row in the database, your workflow changes. That is, if your code grabs data from an online database on May 5, 2012, then you query the database again one month later on June 5, 2012, you may get a different response from the database. This is of course not surprising.
 
-However, this is a major concern for reproducbility. Ther are a number of options one it comes to scientific reproducibility in the context of changing online database content:
+However, this is a major concern for reproducbility. Ther are a number of options when it comes to scientific reproducibility in the context of changing online database content:
 
 * **Cache your data** Ideally this is the raw data that the online database provides, which your scripts then process to pass down through your workflow. However, this could be somewhat processed data to make it more consumable by others. Ideally you would provide this data along with your published paper, or as a stand alone dataset.
 * **Data provider stores a cache of your data request** Databases can be versioned so that each change is stored, sort of like you can look back through versions of each file on Dropbox. This is the same with any database online. However, in practice online database rarely allow you to cache your data request, and if they do it's for maybe 24 hours or a few weeks. For science, ideally we would want indefinite caching. However, the infrastructure just isn't there right now to do this.
+
+Note that some web services will provide the option to cache your request, so that subsequent requests of the same resource are more quickly retrieved. However, the length of time these request are cached is rather short (hours, up to one year typically), and not a viable solution for long-term reproducibility.
 
 ## <a href="#sens" name="sens">#</a> Sensitive data
 
@@ -91,7 +166,7 @@ What follows is a short list of online databases of at least some scientific use
 
 ## <a href="#sustain" name="sustain">#</a> Database sustainability
 
-Serving up a database on the internet may have been hard 20 years ago, but today it is quite trivial in terms of costs and ease of setup (see next section). Often the limiting factor is cost, as hosting does add up over time, and as increased server sizes are needed. There are various solutions to the funing problem. First, if you are at a university they may give you free server space for the database. Second, small grants of a few thousand dollars could probably pay for a few years of hosting costs. Third, integrating your data into a larger data provider is a good route, and your data may be more likely to be seen. For example, if you have species occurrence record data, instead of providing your data yourself, you can submit the data to the Global Biodiversity Information Facility (GBIF), a global warehouse for these kind of data.
+Serving up a database on the internet may have been hard 20 years ago, but today it is quite trivial in terms of costs and ease of setup (see next section). Often the limiting factor is cost, as hosting does add up over time, and as increased server sizes are needed. There are various solutions to the funidng problem. First, if you are at a university they may give you free server space for the database. Second, small grants of a few thousand dollars could probably pay for a few years of hosting costs. Third, integrating your data into a larger data provider is a good route, and your data may be more likely to be seen. For example, if you have species occurrence record data, instead of providing your data yourself, you can submit the data to the [Global Biodiversity Information Facility (GBIF)](gbif), a global warehouse for these kind of data.
 
 ## <a href="#apis" name="apis">#</a> Think APIs first
 
@@ -111,5 +186,8 @@ If the above is too advanced, just getting data out on the web is a great start.
 * spreadsheet
 * dataset
 * database
-* API
-*
+* API - Application Programming Interface. In the broadest sense, APIs are interaces to any program, whether a local program or a program available over the internet. For the purposes of this book, we mostly discuss the case of an API to a databse onelin .
+
+[gbif]: http://gbif.org
+[uri]: #
+[doi]: #
