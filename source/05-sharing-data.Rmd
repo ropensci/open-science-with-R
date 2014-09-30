@@ -1,5 +1,29 @@
 ## Outline
 
+I've 
+
+* Introduction 
+  - Why share data?
+* Data sharing basics
+  - qualitative recommendations
+  - data management life cycle
+* Advanced data sharing (maybe this is too intimidating)
+  - Repositories
+  - Metadata
+  - Provenance
+* Best practices guide (this could also be a box maybe)
+  - summarize best practices as a list from previous sections.
+* Use case
+  - Show example with rOpenSci package suite
+    * Read in sample data (maybe a small data set one of us has collected)
+    * Document with EML
+    * Share on figshare
+
+
+
+## Introduction
+
+
 * Why share data? 
   - The virtues of sharing data
   - increased citation
@@ -18,8 +42,10 @@
   - Creating EML and pushing to KNB?
 
 
-## Best practices
+## Data sharing basics
 
+<!-- I think this is 
+-->
 Follow guides provided by repositories and literature of your field.  For instance, recent papers 
 
 <!--Don't need to list all these, but good to highlight how our tools make all these things easy -->
@@ -65,3 +91,5 @@ Heirarchical checklist for data sharing: (de Waard http://www.slideshare.net/ani
 - [ ] Trusted (e.g. validated or checked by peer review)
 - [ ] Citable (e.g. unique identifier, can count citations)
 - [ ] Usable (executable code, machine readable metadata)
+
+
