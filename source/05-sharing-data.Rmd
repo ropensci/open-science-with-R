@@ -1,29 +1,5 @@
 ## Outline
 
-I've 
-
-* Introduction 
-  - Why share data?
-* Data sharing basics
-  - qualitative recommendations
-  - data management life cycle
-* Advanced data sharing (maybe this is too intimidating)
-  - Repositories
-  - Metadata
-  - Provenance
-* Best practices guide (this could also be a box maybe)
-  - summarize best practices as a list from previous sections.
-* Use case
-  - Show example with rOpenSci package suite
-    * Read in sample data (maybe a small data set one of us has collected)
-    * Document with EML
-    * Share on figshare
-
-
-
-## Introduction
-
-
 * Why share data? 
   - The virtues of sharing data
   - increased citation
@@ -40,6 +16,20 @@ I've
 * Use case
   - Sharing data with rfigshare
   - Creating EML and pushing to KNB?
+  
+<!-- All references are on a menedeley group -->
+
+## Introduction
+Data sharing is a fundamental component of open science. In earlier chapters we discussed how to access and use other people's data from internet databases. However, if you collect data how can you best share it? Why should you share it?  Data sharing is a complex topic, and arguments have been made that appeal to both people's sense of moral responsibility (10.1111/j.1365-2486.2012.02693.x) and their self-interest in so much as data sharing results in greater citation (10.7717/peerj.175).  We believe that open science facilitates rapid progress in the science (10.1371/journal.pmed.0050183), and sharing well documented data sets will benefit not just the community, but you as the individual researcher. Think about the tremendous effort that likely went into collecting your data, a little extra effort can ensure that your data is discoverable and usable.
+<^ add Poisot reference here>
+
+<2nd paragraph on main elements of data sharing>
+
+The rOpenSci tool kit provides you with tools that can be used to both document and share your data. 
+
+
+
+
 
 
 ## Data sharing basics
