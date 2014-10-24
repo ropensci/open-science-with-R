@@ -1,3 +1,5 @@
+
+
 _Outline_
 
 * Why develop an R package?
@@ -30,45 +32,51 @@ Going from less to more complicated: a few lines of code to accomplish a task, a
 
 Hadley Wickham's [R packages][hadrpkgs] is the best place to find information on developing R packages. We'll skim over the details of basic package development here before diving in to aspects of R package development specific to working with web resources, and cover additional topics like testing and continuous integration.
 
-First, create a package skeleton.
+First, check if you have the requirements installed to use `devtools`. Running `has_devel()` should give a `TRUE` value. If you don't have everything needed, the function will point out missing dependencies.
+
 
 ```r
 library('devtools')
-create('foobar')
+has_devel()
+#> '/Library/Frameworks/R.framework/Resources/bin/R' --vanilla CMD SHLIB  \
+#>   foo.c
+#> [1] TRUE
 ```
+
+Second, create a package skeleton.
+
 
 ```r
 create('foobar')
+#> Creating package foobar in .
+#> No DESCRIPTION found. Creating with values:
+#> Package: foobar
+#> Title: What the package does (one line)
+#> Version: 0.1
+#> Authors@R: "First Last <first.last@example.com> [aut, cre]"
+#> Description: What the package does (one paragraph)
+#> Depends: R (>= 3.1.1)
+#> License: What license is it under?
+#> LazyData: true
+#> Adding RStudio project file to foobar
 ```
 
-```r
-Creating package foobar in .
-No DESCRIPTION found. Creating with values:
-
-Package: foobar
-Title: What the package does (short line)
-Version: 0.1
-Authors@R: "First Last <first.last@example.com> [aut, cre]"
-Description: What the package does (paragraph)
-Depends: R (>= 3.1.0)
-License: What license is it under?
-LazyData: true
-Adding Rstudio project file to foobar
-```
-
-This creates a new folder with the following structure:
+The `create()` function creates a new folder with the following structure:
 
 ```
 foobar/
-  R/foobar-package.R
-  man/foobar-package.Rd
+  R/
+  NAMESPACE
   DESCRIPTION
-  .Rbuildignore
+  foobar.Rproj
 ```
 
-Where the `R` folder holds any R code of `*.R` file extension, the `man` folder holds documentation files of `*.Rd` file extension, the DESCRIPTION file holds the metadata describing the package, and `.Rbuildignore` holds things to ignore when building the R package to install later.
+Where the `R` folder holds any R code of `*.R` file extension, the `NAMESPACE` file holds the rules for what functions to export and what packages and/or functions to import, the `DESCRIPTION` file holds the metadata describing the package, and `foobar.Rproj` is the RStudio project file. If you have RStudio installed, you can open `foobar.Rproj` directly to an RStudio project. We highly recommend using RStudio projects, at least for the reason that the below workflow makes R package development quite easy and being in the directory of your package in RStudio means you don't have to give paths for any `devtools` function calls.
 
-Second, write some code! Let's write a function that prints something when the function is invoked, and add some `roxygen` documentation.
+The `NAMESPACE` file only has one line in it: `exportPattern("^[^\\.]")`. In English this means that it's exporting all functions and objects contained within the package. This is fine for first starting off with your package, but using the workflow below, the `NAMESPACE` file will be generated automatically, so you mostly don't need to worry about it again.  
+
+Second, write some code! Let's write a function that prints something when the function is invoked, and add some `roxygen` documentation. Remember to use the `roxygen` tag `@export` so that the function is exported, which means available to users when the package is loaded.
+
 
 ```r
 #' Print message given
@@ -81,21 +89,36 @@ foo <- function(x){
 
 If we execute this function, we can then use it:
 
-```r
-foo("bar")
-```
 
 ```r
-[1] "bar"
+foo("bar")
+#> [1] "bar"
 ```
 
 Now we save the `foo()` function into a file named `foo.R` in the `R` folder. After that, we can use a function from the `devtools` package called `document()`, which generates a documentation file in the `man` folder automatically.
+
 
 ```r
 document("~/foobar")
 ```
 
-There are various ways to go about the workflow of code writing, documentation generation, etc., but the essential bits we just covered. See [Hadley Wickham's book][hadrpkgs] for in depth details.
+Repeat the above process of writing a function and then running `document()` to create/update documentation files.
+
+There are a few more useful tools for package development from `devtools`:
+
+* `load_all()` - Run this in your package directory to load all functions; it loads exported, and not exported functions.
+* `install()` - Installs the package.
+* A function not in devtools, `load_defaults()`, is useful to load all default parameter values to then work on a function. The function can be found [here](https://github.com/sckott/sacbox/blob/master/R/load_defaults.r).
+
+If you do use RStudio there are many keyboard shortcuts available which speed up the package development process. For example:
+
+* `Ctrl+Shift+B` - Installs the package, restarts the session, and loads package.
+* `Ctrl+Shift+L` - Load all - runs `devtools::load_all()`
+* `Ctrl+Shift+T` - Run tests - runs `testthat::test_package()`
+* `Ctrl+Shift+E` - Check package - runs `devtools::check()`
+* `Ctrl+Shift+D` - Document package - runs `devtools::document()`
+
+There are various ways to go about the workflow of code writing, documentation generation, etc., but we just covered the essential bits. See [Hadley Wickham's book][hadrpkgs] for in depth details.
 
 ## R package conventions and best practices
 
@@ -103,8 +126,8 @@ Below we'll talk about many issues that could be in this section - here we'll ju
 
 * __Package naming:__ This is more of a style point, but the best package names are all lowercase, are meaningful, and don't conflict with other R packages.
 * __Development location:__ A great thing about open source software is that _it should be_ easy to contribute to a piece of software, report bugs, and request features. However, when software is not developed in a location that is meant for software development, this becomes difficult. Use a modern software development application, like Bitbucket, Google Code, Gitlab, GitHub, etc.
-* __Package versioning:__ Version your software appropriately! Ideally use semantic versioning, in which XXXX. See [this blog post by Yihui Xie][xiepost] as a good introduction.
-* __OO system:__ Which object system to use in R is a matter of preference. S3 is the most liberal and least structured, whereas S4 is more strict and more structured, reference classes are similar, and the new R6 class is more or less the same as reference classes but less strict and faster. We often use S3 because development with S3 classes is extremely easy, and they allow flexible manipulation by users. When a package is extremely complicated, we often use S4 classes.
+* __Package versioning:__ Version your software appropriately! Ideally use semantic versioning, in which there are usually three numbers, e.g., `0.1.2`, where 0 is the major number, 1 is the minor number, and 2 the patch number. We recommend adding a fourth number for development versions of your package; you could use something like `.99`, so your develpoment package version might be `0.1.2.99`. Using development versions clearly separates versions that are released to CRAN and those that are not. See [this blog post by Yihui Xie][xiepost] as a good introduction.
+* __OO system:__ Which object system to use in R is a matter of preference. S3 is the most liberal and least structured, whereas S4 is more strict and more structured, reference classes are similar, and the new R6 class is more or less the same as reference classes but less strict and faster. In rOpenSci, we often use S3 because development with S3 classes is extremely easy, and they allow flexible manipulation by users. When a package is extremely complicated, we often use S4 classes.
 
 ## Writing functions to interact with web data
 
@@ -129,57 +152,69 @@ Not everything has a nice set of standardized codes - http codes are one of thes
 
 ### Exposing curl options for advanced users
 
-It is a good idea to provide to users the ability to use curl options. For curl options, see `httr::httr_options()`, or `RCurl::listCurlOptions()`. Some examples will demonstrate their utility, in this case using `httr`.
+It is a good idea to provide to users the ability to use curl options. For curl options, see `httr::httr_options()`, or `RCurl::listCurlOptions()`. Some examples will demonstrate their utility, in this case using `httr`. `httr` has a number of helper functions that give you easier access to curl options - some of which we'll go over below. Let's load `httr` first, and define a url to interact with.
+
+
+```r
+library('httr')
+url <- "http://api.crossref.org/works/10.1037/0003-066X.59.1.29/agency"
+```
 
 **verbose**
 
-```r
-res <- GET('http://localhost:4000', config = verbose())
-```
+Prints out a message about what curl is doing.
 
-Which prints out the following message about what curl is doing.
+
 
 ```r
--> GET / HTTP/1.1
--> User-Agent: curl/7.30.0 Rcurl/1.95.4.1 httr/0.5
--> Host: localhost:4000
--> Accept-Encoding: gzip
--> accept: application/json, text/xml, */*
-->
-<- HTTP/1.1 200 OK
-<- Etag: 1c4e2e7-14fe-54108d96
-<- Content-Type: text/html
-<- Content-Length: 5374
-<- Last-Modified: Wed, 10 Sep 2014 17:42:46 GMT
-<- Server: WEBrick/1.3.1 (Ruby/2.1.0/2013-12-25)
-<- Date: Wed, 10 Sep 2014 17:42:55 GMT
-<- Connection: Keep-Alive
-<-
+GET(url, verbose())
+#> -> GET /works/10.1037/0003-066X.59.1.29/agency HTTP/1.1
+#> -> User-Agent: curl/7.30.0 Rcurl/1.95.4.1 httr/0.5
+#> -> Host: api.crossref.org
+#> -> Accept-Encoding: gzip
+#> -> accept: application/json, text/xml, */*
+#> ->
+#> <- HTTP/1.1 200 OK
+#> <- Date: Fri, 24 Oct 2014 20:55:10 GMT
+#> <- Server: http-kit
+#> <- Access-Control-Allow-Headers: X-Requested-With
+#> <- Access-Control-Allow-Origin: *
+#> <- Vary: Accept
+#> <- Content-Type: application/json;charset=UTF-8
+#> <- Content-Length: 163
+#> <-
 ```
 
 **timeout**
 
-```r
-res <- GET('http://localhost:4000', config = timeout())
-```
+Set a timeout for the request. The request fails if not complete within the set time.
 
-xxx
 
 ```r
-asdf
+res <- GET(url, timeout(seconds = 0.001))
+#> Error: Resolving timed out after 1 milliseconds
 ```
 
 **progress**
 
-```r
-res <- GET('http://localhost:4000', config = progress())
-```
+Print a progress bar.
 
-xxx
 
 ```r
-asdf
+res <- GET(url, progress())
+#> |=================================================================| 100%
 ```
+
+**proxy**
+
+Use a proxy to connect to the internet. You may have to use a proxy to connect to some services on the web, so this may be an edge case, but can include some users of your package. You may want to document this as an option for users that need it.
+
+
+```r
+GET("http://google.com/", use_proxy("198.71.51.227", 80), verbose())
+```
+
+Remember, your users will thank you for allowing them to pass in curl options!  If yo use `RCurl` instead of `httr` you can do the same thing, but you won't have these helper functions in `httr`.
 
 ## Developing R packages for web data
 
@@ -231,6 +266,8 @@ Putting this `.travis.yml` file in the root of your R package will run a build o
 
 ## CRAN bound
 
+The first thing to say here is: check your package very thoroughly. CRAN maintainers are volunteers, dealing with the 5000+ packages, so their time is limited. In addition, they may be very short, even mean, in their replies. Try not to take this personally, and just respond to the technical content of their requests.
+
 The best place to put a useable R package, where it will get the most eyeballs on it, is CRAN - the Comprehensive R Archive Network. The `devtools` package is essential to help you submit your package to CRAN - see the `release` function. Release takes the path to your package folder as the first argument, and helps you through the process, asking questions along the way, and at the end uploads the package to CRAN for you.
 
 ```r
@@ -258,23 +295,28 @@ R CMD CHECK passed on my local OS X install on R 3.1 and R 3.2, ubuntu running o
 This is a re-submission of v0.7.0 with non-ASCII characters removed from the vignette so CHECK passes cleanly.
 ```
 
-If you don't have the `NEWS` and `cran-comments.md` files, the `release()` function will ask you to include them.
+If you don't have the `NEWS` and `cran-comments.md` files, the `release()` function will ask you to include them. Make sure to add `cran-comments.md` to your ``.Rbuildignore` file.
+
+Remember to tag the version after submitted to CRAN so there's  always a version you can jump back to, and reference, if needed at a later date. Hopefully you will develop your package on a public code repository like Bitbucket or GitHub, in which case, you can include the relavant section of the NEWS file in a release page.  
 
 ## Quick reference
 
-* Create package (from `devtools` package): `create("pkg_name")`
-* Run tests in package (from `testthat` package): `test_package("pkg_name")` or `check("pkg_name")` will run tests as part of `R CMD CHECK` process
-* Publish package to CRAN (from `devtools` package): `release("pkg_name")`
+* Create package (from `devtools` package): `create()`
+* Run tests in package (from `testthat` package): `test_package()` or `check()` will run tests as part of `R CMD CHECK` process
+* Publish package to CRAN (from `devtools` package): `release()`
 
 ## Further reading
 
 * Hadley Wickham has a book in progress called R package development, which has a number of sections on developing R packages. Find it at [http://r-pkgs.had.co.nz/](http://r-pkgs.had.co.nz/).
-* Hadley Wickham has a set of best practices for developing R packages to interact with web APIs within the `httr` package at [https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd](https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd).
+* Hadley Wickham has a [set of best practices for developing R packages to interact with web APIs][apipkgs] within the `httr` package.
 * etc...
 
 [hadrpkgs]: http://r-pkgs.had.co.nz/
 [travis]: https://travis-ci.org/
-[xiepost]: #
-[appveyor]: #
-[rappveyor]: #
-[httpcodes]: #
+[xiepost]: http://yihui.name/en/2013/06/r-package-versioning/
+[appveyor]: http://www.appveyor.com/
+[rappveyor]: https://github.com/krlmlr/r-appveyor
+[httpcodes]: http://www.wikiwand.com/en/List_of_HTTP_status_codes
+[apipkgs]: https://github.com/hadley/httr/blob/master/vignettes/api-packages.Rmd
+
+
